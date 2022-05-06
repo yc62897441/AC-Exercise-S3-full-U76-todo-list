@@ -4,6 +4,7 @@ const bodyParser = require('body-parser')
 const methodOverride = require('method-override')
 const bcrypt = require('bcryptjs')
 const session = require('express-session')
+const flash = require('connect-flash')
 
 const app = express()
 const PORT = 3000
@@ -32,6 +33,8 @@ usePassport(app)
 
 // 載入自定義套件
 const routes = require('./routes/index')
+
+app.use(flash())
 
 app.use(routes)
 

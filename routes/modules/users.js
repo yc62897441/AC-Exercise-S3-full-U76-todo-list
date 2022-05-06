@@ -20,15 +20,28 @@ router.get('/register', (req, res) => {
 
 router.post('/register', (req, res) => {
   const { name, email, password, confirmPassword } = req.body
+  const errors = []
+
+  if (!name || !email || !password || !confirmPassword) {
+    errors.push('Name, Email, Password, ConfirmPassword 均為必填項目')
+  }
+  if (password !== confirmPassword) {
+    errors.push('Password, ConfirmPassword 不一致')
+  }
+  if (errors.length > 0) {
+    return res.render('register', { name, email, password, confirmPassword, errors })
+  }
+
   User.findOne({ where: { email } })
     .then(user => {
       if (user) {
-        console.log('User already exists')
+        errors.push('User already exists')
         return res.render('register', {
           name,
           email,
           password,
-          confirmPassword
+          confirmPassword,
+          errors
         })
       }
       return bcrypt.genSalt(10)

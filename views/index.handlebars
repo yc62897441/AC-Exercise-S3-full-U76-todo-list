@@ -2,18 +2,18 @@
 <ul class="list-group">
   {{#each todos}}
   <li class="list-group-item">
-    <div class="row">
+    <div class="row d-flex justify-content-between ms-2 me-2 mt-1 mb-1">
       <div class="col-auto mr-auto">
         <input style="vertical-align: middle;" type="checkbox" name="isDone" {{#if this.isDone }} checked {{/if}}
           disabled>
-        <h4 style="display: inline; vertical-align: middle;">
+        <h4 class="ms-2" style="display: inline; vertical-align: middle;">
           {{ this.name }}
         </h4>
       </div>
       <div class="col-auto">
         <a class="btn btn-secondary" href="/todos/todo/{{ this.id }}">detail</a>
-        <a class="btn btn-success" href="./todos/{{ this.id }}/edit">edit</a>
-        <form action="./todos/{{ this.id }}?_method=DELETE" method="POST" style="display: inline;">
+        <a class="btn btn-success ms-2" href="./todos/{{ this.id }}/edit">edit</a>
+        <form class='ms-2' action="./todos/{{ this.id }}?_method=DELETE" method="POST" style="display: inline;">
           <button class="btn btn-danger" type="submit">delete</button>
         </form>
       </div>

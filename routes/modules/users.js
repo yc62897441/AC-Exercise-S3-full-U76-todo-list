@@ -6,7 +6,17 @@ const db = require('../../models')
 const User = db.User
 
 router.get('/login', (req, res) => {
-  res.render('login')
+  // 如果有錯誤訊息，或是成功登出訊息，或是使用者輸入之登入email，傳給 views，並清空 session 內存的資訊
+  const errors = req.session.errors
+  req.session.errors = []
+
+  const logoutMsg = req.session.logoutMsg
+  req.session.logoutMsg = ''
+
+  const email = req.session.email
+  req.session.email = ''
+  
+  res.render('login', { errors, logoutMsg, email })
 })
 
 router.post('/login', passport.authenticate('local', {
@@ -35,7 +45,7 @@ router.post('/register', (req, res) => {
   User.findOne({ where: { email } })
     .then(user => {
       if (user) {
-        errors.push('User already exists')
+        errors.push('這個 Email 已經註冊過了')
         return res.render('register', {
           name,
           email,
@@ -57,7 +67,13 @@ router.post('/register', (req, res) => {
 })
 
 router.get('/logout', (req, res) => {
-  res.send('/users/login')
+  delete req.session.email
+  delete req.session.passport
+
+  req.session.logoutMsg = '成功登出'
+
+  req.logout()
+  res.redirect('/users/login')
 })
 
 module.exports = router

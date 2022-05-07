@@ -1,5 +1,6 @@
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
+const FacebookStrategy = require('passport-facebook').Strategy
 const bcrypt = require('bcryptjs')
 const db = require('../models')
 const User = db.User
@@ -27,6 +28,39 @@ module.exports = app => {
               return done(null, false, { message: 'Email or Password incorrect.' })
             }
             return done(null, user)
+          })
+      })
+      .catch(error => done(error, false))
+  }))
+
+  // 設定 Facebook 登入策略
+  passport.use(new FacebookStrategy({
+    clientID: process.env.FACEBOOK_ID,
+    clientSecret: process.env.FACEBOOK_SECRET,
+    callbackURL: process.env.FACEBOOK_CALLBACK,
+    profileFields: ['email', 'displayName'] // profileFields 設定是和 Facebook 要求開放的資料，我們要了兩種資料
+  }, (accessToken, refreshToken, profile, done) => {
+    // profile 獲得的臉書資訊
+    const { name, email } = profile._json
+    User.findOne({ where: { email } })
+      .then(user => {
+        // 如果 email 已存在資料庫，代表已經註冊過，所以直接回傳 user 資訊
+        if (user) {
+          return done(null, user)
+        }
+
+        // 如果 email 不存在資料庫，則建立新使用者資訊
+        const randomPassword = Math.random().toString(36).slice(-8)
+        bcrypt.genSalt(10)
+          .then(salt => bcrypt.hash(randomPassword, salt))
+          .then(hash => {
+            User.create({
+              email: email,
+              password: hash,
+              name: name
+            })
+              .then(user => { return done(null, user) })
+              .catch(error => done(error, false))
           })
       })
       .catch(error => done(error, false))

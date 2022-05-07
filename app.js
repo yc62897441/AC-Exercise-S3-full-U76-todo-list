@@ -1,3 +1,7 @@
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
+
 const express = require('express')
 const exphbs = require('express-handlebars')
 const bodyParser = require('body-parser')
@@ -7,7 +11,7 @@ const session = require('express-session')
 const flash = require('connect-flash')
 
 const app = express()
-const PORT = 3000
+const PORT = process.env.PORT
 
 const db = require('./models')
 const User = db.User
@@ -19,7 +23,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
 
 app.use(session({
-  secret: 'ThisIsMySecret',
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: true
 }))

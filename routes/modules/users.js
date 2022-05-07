@@ -5,6 +5,7 @@ const bcrypt = require('bcryptjs')
 const db = require('../../models')
 const User = db.User
 
+// 檢視登入頁面
 router.get('/login', (req, res) => {
   // 如果有錯誤訊息，或是成功登出訊息，或是使用者輸入之登入email，傳給 views，並清空 session 內存的資訊
   const errors = req.session.errors
@@ -19,15 +20,18 @@ router.get('/login', (req, res) => {
   res.render('login', { errors, logoutMsg, email })
 })
 
+// 檢視註冊頁面
+router.get('/register', (req, res) => {
+  res.render('register')
+})
+
+// 登入
 router.post('/login', passport.authenticate('local', {
   successRedirect: '/',
   failureRedirect: '/users/login'
 }))
 
-router.get('/register', (req, res) => {
-  res.render('register')
-})
-
+// 註冊
 router.post('/register', (req, res) => {
   const { name, email, password, confirmPassword } = req.body
   const errors = []
@@ -66,6 +70,7 @@ router.post('/register', (req, res) => {
     })
 })
 
+// 登出
 router.get('/logout', (req, res) => {
   delete req.session.email
   delete req.session.passport

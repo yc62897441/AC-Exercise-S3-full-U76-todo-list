@@ -4,6 +4,7 @@ const db = require('../../models')
 const Todo = db.Todo
 const User = db.User
 
+// 檢視主頁，列出所有 todos
 router.get('/', (req, res) => {
   const name = req.user.name
   const id = req.user.id

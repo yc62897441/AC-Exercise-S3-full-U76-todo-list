@@ -3,6 +3,7 @@ const router = express.Router()
 const db = require('../../models')
 const Todo = db.Todo
 
+// 檢視單一 todo 資訊
 router.get('/todo/:id', (req, res) => {
   const id = req.params.id
   return Todo.findByPk(id)
@@ -10,10 +11,12 @@ router.get('/todo/:id', (req, res) => {
     .catch(error => console.log(error))
 })
 
+// 檢視新增 todo 頁面
 router.get('/new', (req, res) => {
   res.render('new')
 })
 
+// 檢視編輯 todo 頁面
 router.get('/edit/:id', (req, res) => {
   const userId = req.user.id
   const todoId = req.params.id
@@ -27,6 +30,7 @@ router.get('/edit/:id', (req, res) => {
     .catch(error => console.log(error))
 })
 
+// 新增單一 todo
 router.post('/', (req, res) => {
   const name = req.body.name
 
@@ -39,6 +43,7 @@ router.post('/', (req, res) => {
     .catch(error => console.log(error))
 })
 
+// 編輯單一 todo
 router.put('/edit/:id', (req, res) => {
   console.log(req.body)
   const userId = req.user.id
@@ -55,11 +60,14 @@ router.put('/edit/:id', (req, res) => {
       todo.name = name
       todo.isDone = isDone
       todo.save()
+    })
+    .then(() => {
       res.redirect('/')
     })
     .catch(error => console.log(error))
 })
 
+// 刪除單一 todo
 router.delete('/:id', (req, res) => {
   const todoId = req.params.id
   const userId = req.user.id

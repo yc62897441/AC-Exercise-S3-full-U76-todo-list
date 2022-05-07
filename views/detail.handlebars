@@ -6,7 +6,7 @@
 
     <input class="form-control me-3" type="text" placeholder="name" name="name" value="{{ todo.name }}" disabled>
 
-    <a class="btn btn-success mx-1" href="/todos/{{ todo._id }}/edit">Edit</a>
+    <a class="btn btn-success mx-1" href="/todos/edit/{{ todo.id }}">Edit</a>
     <a class="btn btn-secondary mx-1" href="/">Back</a>
     <button class="btn btn-danger mx-1" type="submit">Delete</button>
   </div>
